@@ -1,0 +1,141 @@
+<?php
+
+/**
+ * Copyright (c) Florian Krämer (https://florian-kraemer.net)
+ * Licensed under The MIT License
+ * For full copyright and license information, please see the LICENSE.txt
+ * Redistributions of files must retain the above copyright notice.
+ *
+ * @copyright Copyright (c) Florian Krämer (https://florian-kraemer.net)
+ * @author    Florian Krämer
+ * @link      https://github.com/Phauthentic
+ * @license   https://opensource.org/licenses/MIT MIT License
+ */
+
+declare(strict_types=1);
+
+namespace Phauthentic\Infrastructure\Http\Dispatcher;
+
+use Psr\Container\ContainerInterface;
+use Psr\Http\Message\ResponseInterface;
+use Psr\Http\Message\ServerRequestInterface;
+use Psr\Http\Server\RequestHandlerInterface;
+
+/**
+ * A simple controller dispatcher middleware
+ *
+ * It will check if there is route in the request attributes. If there is a
+ * route it will take the handler and check if it is a string and tries to
+ * resolve it against the DI container.
+ */
+class Dispatcher implements DispatcherInterface
+{
+    /**
+     * @var string
+     */
+    protected $defaultNamespace = 'App';
+
+    /**
+     * @var string
+     */
+    protected $methodSeparator = '@';
+
+    /**
+     * @var string
+     */
+    protected $namespaceSeparator = '.';
+
+    /**
+     * @var string
+     */
+    protected $classTemplate = '{namespace}\\Http\\RequestHandler\\{className}';
+
+    /**
+     * @var array
+     */
+    protected $classParts = [];
+
+    /**
+     * @var \Psr\Container\ContainerInterface;
+     */
+    protected $container;
+
+    /**
+     * @param \Psr\Container\ContainerInterface $container PSR Container
+     */
+    public function __construct(
+        ContainerInterface $container
+    ) {
+        $this->container = $container;
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function dispatch(ServerRequestInterface $request, $handler): ?ResponseInterface
+    {
+        if (is_string($handler)) {
+            $handler = $this->stringHandler($handler, $request);
+        }
+
+        if ($handler instanceof RequestHandlerInterface) {
+            return $handler->handle($request);
+        }
+
+        if (is_callable($handler)) {
+            return $handler($request);
+        }
+
+        return null;
+    }
+
+    protected function stringHandler(string $handler, ServerRequestInterface $request)
+    {
+        $result = $this->parseString($handler);
+
+        if (!$this->container->has($result['className'])) {
+            return null;
+        }
+
+        $handler = $this->container->get($result['className']);
+
+        if ($result['action' === null]) {
+            return $handler;
+        }
+
+        return $handler->{$result['action']}($request);
+    }
+
+    protected function parseString(string $handler): array
+    {
+        $namespace = $this->defaultNamespace;
+        $action = null;
+
+        // Determine the namespace
+        $position = strpos($handler, $this->namespaceSeparator);
+        if ($position) {
+            $namespace = strstr($handler, '.', true);
+            $handler = substr($handler, $position + 1);
+        }
+
+        // Determine if there is an action besides a class
+        $position = strpos($handler, $this->methodSeparator);
+        if ($position) {
+            $action = substr($handler, $position + 1);
+            $handler = substr($handler, 0, $position);
+        }
+
+        $fqcn = $this->classTemplate;
+        $this->classParts['className'] = $handler;
+        $this->classParts['namespace'] = $namespace;
+
+        foreach ($this->classParts as $placeholder => $var) {
+            $fqcn = str_replace('{' . (string)$placeholder . '}', (string)$var, $fqcn);
+        }
+
+        return [
+            'className' => $fqcn,
+            'method' => $action
+        ];
+    }
+}

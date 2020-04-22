@@ -1,0 +1,63 @@
+{
+    "name": "phauthentic/dispatcher-middleware",
+    "description": "",
+    "type": "library",
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Florian Krämer",
+            "role": "Maintainer"
+        }
+    ],
+    "require": {
+        "php": "^7.2",
+        "psr/container": "^1.0",
+        "psr/http-factory": "^1.0",
+        "psr/http-server-handler": "^1.0",
+        "psr/http-server-middleware": "^1.0"
+    },
+    "require-dev": {
+        "instituteweb/composer-scripts": "^1.1"
+    },
+    "minimum-stability": "stable",
+    "prefer-stable": true,
+    "config": {
+        "bin-dir": "bin",
+        "process-timeout": 0,
+        "sort-packages": true
+    },
+    "autoload": {
+        "psr-4": {
+            "Phauthentic\\": "src"
+        }
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "Phauthentic\\Test\\": "tests"
+        }
+    },
+    "scripts": {
+        "post-install-cmd": [
+            "php config/composer_post_install.php"
+        ],
+        "tests": [
+            "\\InstituteWeb\\ComposerScripts\\ImprovedScriptExecution::apply",
+            "./bin/phpunit"
+        ],
+        "cscheck": [
+            "\\InstituteWeb\\ComposerScripts\\ImprovedScriptExecution::apply",
+            "./bin/phpcs ./src ./tests --standard=./phpcs.xml -s"
+        ],
+        "csfix": [
+            "\\InstituteWeb\\ComposerScripts\\ImprovedScriptExecution::apply",
+            "./bin/phpcbf ./src ./tests --standard=./phpcs.xml"
+        ],
+        "analyze": [
+            "\\InstituteWeb\\ComposerScripts\\ImprovedScriptExecution::apply",
+            "./bin/phpstan analyse -l 5 -c phpstan.neon ./src\\"
+        ],
+        "phive": [
+            "php ./config/composer_phive.php"
+        ]
+    }
+}
