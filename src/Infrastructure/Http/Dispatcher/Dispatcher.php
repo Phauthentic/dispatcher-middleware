@@ -98,6 +98,8 @@ class Dispatcher implements DispatcherInterface
     public function setClassTemplate(string $template): DispatcherInterface
     {
         $this->classTemplate = $template;
+
+        return $this;
     }
 
     /**
