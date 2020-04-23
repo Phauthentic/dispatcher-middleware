@@ -39,25 +39,10 @@ build:
         #elasticsearch: '6'
 
     nodes:
-        tests-php72:
-            environment:
-                php:
-                    version: '7.2'
-                    ini:
-                        phar.readonly: 'Off'
-            tests:
-                override:
-                - sh ./config/ci-setup.sh
-                -
-                    command: './bin/phpunit --coverage-clover=coverage.xml --bootstrap ./tests/bootstrap.php'
-                    coverage:
-                        file: 'coverage.xml'
-                        format: 'php-clover'
-
         tests-php73:
             environment:
                 php:
-                    version: '7.2'
+                    version: '7.3'
                     ini:
                         phar.readonly: 'Off'
             tests:
@@ -72,7 +57,7 @@ build:
         tests-php74:
             environment:
                 php:
-                    version: '7.2'
+                    version: '7.4'
                     ini:
                         phar.readonly: 'Off'
             tests:
