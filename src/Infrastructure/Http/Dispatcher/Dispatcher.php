@@ -73,7 +73,7 @@ class Dispatcher implements DispatcherInterface
      * @param string $namespace Namespace
      * @return $this
      */
-    public function setDefaultNamespace(string $namespace)
+    public function setDefaultNamespace(string $namespace): DispatcherInterface
     {
         $this->defaultNamespace = $namespace;
 
@@ -84,9 +84,9 @@ class Dispatcher implements DispatcherInterface
      * @param array $classParts Class Template Vars
      * @return $this
      */
-    public function setClassParts(array $classParts)
+    public function setClassParts(array $classParts): DispatcherInterface
     {
-        $this->setClassParts = $classParts;
+        $this->classParts = $classParts;
 
         return $this;
     }
@@ -95,7 +95,7 @@ class Dispatcher implements DispatcherInterface
      * @param string $template Template String
      * @return $this
      */
-    public function setClassTemplate(string $template)
+    public function setClassTemplate(string $template): DispatcherInterface
     {
         $this->classTemplate = $template;
     }
@@ -104,7 +104,7 @@ class Dispatcher implements DispatcherInterface
      * @param string $separator Separator
      * @return $this
      */
-    public function setMethodSeparator(string $separator)
+    public function setMethodSeparator(string $separator): DispatcherInterface
     {
         $this->methodSeparator = $separator;
 
@@ -115,7 +115,7 @@ class Dispatcher implements DispatcherInterface
      * @param string $separator Separator
      * @return $this
      */
-    public function setNamespaceSeparator(string $separator)
+    public function setNamespaceSeparator(string $separator): DispatcherInterface
     {
         $this->namespaceSeparator = $separator;
 

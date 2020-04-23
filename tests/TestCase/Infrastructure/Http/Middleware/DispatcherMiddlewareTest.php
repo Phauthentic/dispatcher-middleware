@@ -20,6 +20,9 @@ use Phauthentic\Infrastructure\Http\Dispatcher\DispatcherInterface;
 use Phauthentic\Infrastructure\Http\Dispatcher\HandlerExtractorInterface;
 use Phauthentic\Infrastructure\Http\Middleware\DispatcherMiddleware;
 use PHPUnit\Framework\TestCase;
+use Psr\Http\Message\ResponseInterface;
+use Psr\Http\Message\ServerRequestInterface;
+use Psr\Http\Server\RequestHandlerInterface;
 
 /**
  * DispatcherMiddleware Test
@@ -29,19 +32,33 @@ class DispatcherMiddlewareTest extends TestCase
     /**
      * @return void
      */
-    public function testHandle(): void
+    public function testProcess(): void
     {
+        $request = $this->getMockBuilder(ServerRequestInterface::class)
+            ->getMock();
+        $response = $this->getMockBuilder(ResponseInterface::class)
+            ->getMock();
+        $requestHandler = $this->getMockBuilder(RequestHandlerInterface::class)
+            ->getMock();
         $extractor = $this->getMockBuilder(HandlerExtractorInterface::class)
             ->getMock();
-
         $dispatcher = $this->getMockBuilder(DispatcherInterface::class)
             ->getMock();
+
+        $request->expects($this->any())
+            ->method('getAttribute')
+            ->with('handler', null)
+            ->willReturn(function () use ($response) {
+                return $response;
+            });
 
         $middleware = new DispatcherMiddleware(
             $extractor,
             $dispatcher
         );
 
-        //$middleware->process($request, $requestHandlerInterface);
+        $result = $middleware->process($request, $requestHandler);
+
+        $this->assertInstanceOf(ResponseInterface::class, $result);
     }
 }

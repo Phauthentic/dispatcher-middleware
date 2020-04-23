@@ -18,6 +18,8 @@ namespace Phauthentic\Test\TestCase\Infrastructure\Http\Dispatcher;
 
 use Phauthentic\Infrastructure\Http\Dispatcher\Dispatcher;
 use PHPUnit\Framework\TestCase;
+use Psr\Container\ContainerInterface;
+use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 
 /**
@@ -26,14 +28,23 @@ use Psr\Http\Message\ServerRequestInterface;
 class DispatcherTest extends TestCase
 {
     /**
-     *
+     * @return void
      */
-    public function testSomething()
+    public function testDispatching(): void
     {
+        $container = $this->getMockBuilder(ContainerInterface::class)
+            ->getMock();
         $request = $this->getMockBuilder(ServerRequestInterface::class)
             ->getMock();
+        $response = $this->getMockBuilder(ResponseInterface::class)
+            ->getMock();
 
-        //$dispatcher = new Dispatcher();
-        //$dispatcher->dispatch($request, 'Plugin.Controller@foo');
+        $callable = function() use ($response) {
+            return $response;
+        };
+
+        $dispatcher = new Dispatcher($container);
+        $result = $dispatcher->dispatch($request, $callable);
+        $this->assertInstanceOf(ResponseInterface::class, $result);
     }
 }
