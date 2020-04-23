@@ -33,7 +33,7 @@ class Dispatcher implements DispatcherInterface
     /**
      * @var string
      */
-    protected $defaultNamespace = 'App';
+    protected $defaultNamespace = '';
 
     /**
      * @var string
@@ -48,7 +48,7 @@ class Dispatcher implements DispatcherInterface
     /**
      * @var string
      */
-    protected $classTemplate = '{namespace}\\Http\\RequestHandler\\{className}';
+    protected $classTemplate = '{namespace}{className}';
 
     /**
      * @var array
@@ -70,10 +70,65 @@ class Dispatcher implements DispatcherInterface
     }
 
     /**
+     * @param string $namespace Namespace
+     * @return $this
+     */
+    public function setDefaultNamespace(string $namespace)
+    {
+        $this->defaultNamespace = $namespace;
+
+        return $this;
+    }
+
+    /**
+     * @param array $classParts Class Template Vars
+     * @return $this
+     */
+    public function setClassParts(array $classParts)
+    {
+        $this->setClassParts = $classParts;
+
+        return $this;
+    }
+
+    /**
+     * @param string $template Template String
+     * @return $this
+     */
+    public function setClassTemplate(string $template)
+    {
+        $this->classTemplate = $template;
+    }
+
+    /**
+     * @param string $separator Separator
+     * @return $this
+     */
+    public function setMethodSeparator(string $separator)
+    {
+        $this->methodSeparator = $separator;
+
+        return $this;
+    }
+
+    /**
+     * @param string $separator Separator
+     * @return $this
+     */
+    public function setNamespaceSeparator(string $separator)
+    {
+        $this->namespaceSeparator = $separator;
+
+        return $this;
+    }
+
+    /**
      * @inheritDoc
      */
-    public function dispatch(ServerRequestInterface $request, $handler): ?ResponseInterface
-    {
+    public function dispatch(
+        ServerRequestInterface $request,
+        $handler
+    ): ?ResponseInterface {
         if (is_string($handler)) {
             $handler = $this->stringHandler($handler, $request);
         }
@@ -89,8 +144,15 @@ class Dispatcher implements DispatcherInterface
         return null;
     }
 
-    protected function stringHandler(string $handler, ServerRequestInterface $request)
-    {
+    /**
+     * @param string $handler Handler String
+     * @param \Psr\Http\Message\ServerRequestInterface $request
+     * @return mixed
+     */
+    protected function stringHandler(
+        string $handler,
+        ServerRequestInterface $request
+    ) {
         $result = $this->parseString($handler);
 
         if (!$this->container->has($result['className'])) {
@@ -99,17 +161,21 @@ class Dispatcher implements DispatcherInterface
 
         $handler = $this->container->get($result['className']);
 
-        if ($result['action' === null]) {
+        if ($result['method'] === null) {
             return $handler;
         }
 
-        return $handler->{$result['action']}($request);
+        return $handler->{$result['method']}($request);
     }
 
+    /**
+     * @param string $handler Handler String
+     * @return array
+     */
     protected function parseString(string $handler): array
     {
         $namespace = $this->defaultNamespace;
-        $action = null;
+        $method = null;
 
         // Determine the namespace
         $position = strpos($handler, $this->namespaceSeparator);
@@ -121,7 +187,7 @@ class Dispatcher implements DispatcherInterface
         // Determine if there is an action besides a class
         $position = strpos($handler, $this->methodSeparator);
         if ($position) {
-            $action = substr($handler, $position + 1);
+            $method = substr($handler, $position + 1);
             $handler = substr($handler, 0, $position);
         }
 
@@ -130,12 +196,16 @@ class Dispatcher implements DispatcherInterface
         $this->classParts['namespace'] = $namespace;
 
         foreach ($this->classParts as $placeholder => $var) {
-            $fqcn = str_replace('{' . (string)$placeholder . '}', (string)$var, $fqcn);
+            $fqcn = str_replace(
+                '{' . (string)$placeholder . '}',
+                (string)$var,
+                $fqcn
+            );
         }
 
         return [
             'className' => $fqcn,
-            'method' => $action
+            'method' => $method
         ];
     }
 }
