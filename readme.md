@@ -1,5 +1,9 @@
 # Dispatcher Middleware
 
+[![Software License](https://img.shields.io/badge/license-MIT-brightgreen.svg?style=flat-square)](LICENSE)
+[![Scrutinizer Coverage](https://img.shields.io/scrutinizer/coverage/g/Phauthentic/dispatcher-middleware/master.svg?style=flat-square)](https://scrutinizer-ci.com/g/Phauthentic/dispatcher-middleware/)
+[![Code Quality](https://img.shields.io/scrutinizer/g/Phauthentic/dispatcher-middleware/master.svg?style=flat-square)](https://scrutinizer-ci.com/g/Phauthentic/dispatcher-middleware/)
+
 The middleware takes an extractor and a dispatcher object. The extractor extracts whatever information is needed from the server request object and returns the handler. The actual dispatcher will then execute the handler.
 
 This is a very clean separation of concerns and should provide you a maximum of flexibility to change your dispatching processes as you need it. For details check the documentation.
