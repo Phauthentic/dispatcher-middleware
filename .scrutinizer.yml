@@ -47,13 +47,7 @@ build:
                         phar.readonly: 'Off'
             tests:
                 override:
-                - phive --no-progress install --target ./bin --trust-gpg-keys 0x4AA394086372C20A,0x8E730BA25823D8B5,0x31C7E470E2138192,0x4AA394086372C20A,0x0F9684B8B16B7AB0
-                - composer self-update
-                - composer --version
-                - composer global require hirak/prestissimo --no-plugins
-                - composer install --prefer-dist --no-interaction
-                - npm install yarn -g
-                - chmod -R +x ./bin
+                - sh ./config/ci-setup.sh
                 -
                     command: './bin/phpunit --coverage-clover=coverage.xml --bootstrap ./tests/bootstrap.php'
                     coverage:
@@ -68,13 +62,7 @@ build:
                         phar.readonly: 'Off'
             tests:
                 override:
-                - phive --no-progress install --target ./bin --trust-gpg-keys 0x4AA394086372C20A,0x8E730BA25823D8B5,0x31C7E470E2138192,0x4AA394086372C20A,0x0F9684B8B16B7AB0
-                - composer self-update
-                - composer --version
-                - composer global require hirak/prestissimo --no-plugins
-                - composer install --prefer-dist --no-interaction
-                - npm install yarn -g
-                - chmod -R +x ./bin
+                - sh ./config/ci-setup.sh
                 -
                     command: './bin/phpunit --coverage-clover=coverage.xml --bootstrap ./tests/bootstrap.php'
                     coverage:
@@ -89,13 +77,7 @@ build:
                         phar.readonly: 'Off'
             tests:
                 override:
-                - phive --no-progress install --target ./bin --trust-gpg-keys 0x4AA394086372C20A,0x8E730BA25823D8B5,0x31C7E470E2138192,0x4AA394086372C20A,0x0F9684B8B16B7AB0
-                - composer self-update
-                - composer --version
-                - composer global require hirak/prestissimo --no-plugins
-                - composer install --prefer-dist --no-interaction
-                - npm install yarn -g
-                - chmod -R +x ./bin
+                - sh ./config/ci-setup.sh
                 -
                     command: './bin/phpunit --coverage-clover=coverage.xml --bootstrap ./tests/bootstrap.php'
                     coverage:
