@@ -30,7 +30,7 @@ class DispatcherTest extends TestCase
     /**
      * @return void
      */
-    public function testDispatching(): void
+    public function testDispatchingCallableHandler(): void
     {
         $container = $this->getMockBuilder(ContainerInterface::class)
             ->getMock();
@@ -45,6 +45,53 @@ class DispatcherTest extends TestCase
 
         $dispatcher = new Dispatcher($container);
         $result = $dispatcher->dispatch($request, $callable);
+        $this->assertInstanceOf(ResponseInterface::class, $result);
+
+        new class {
+            public function log($msg)
+            {
+                echo $msg;
+            }
+        };
+    }
+
+    /**
+     * @return void
+     */
+    public function testDispatchingClassString(): void
+    {
+        $container = $this->getMockBuilder(ContainerInterface::class)
+            ->getMock();
+        $request = $this->getMockBuilder(ServerRequestInterface::class)
+            ->getMock();
+        $response = $this->getMockBuilder(ResponseInterface::class)
+            ->getMock();
+
+        $class = new class($response) {
+            protected $response;
+            public function __construct(ResponseInterface $response)
+            {
+                $this->response = $response;
+            }
+
+            public function login(ServerRequestInterface $request)
+            {
+                return $this->response;
+            }
+        };
+
+        $container->expects($this->any())
+            ->method('has')
+            ->with('Users')
+            ->willReturn(true);
+
+        $container->expects($this->any())
+            ->method('get')
+            ->with('Users')
+            ->willReturn($class);
+
+        $dispatcher = new Dispatcher($container);
+        $result = $dispatcher->dispatch($request, 'Users@login');
         $this->assertInstanceOf(ResponseInterface::class, $result);
     }
 }

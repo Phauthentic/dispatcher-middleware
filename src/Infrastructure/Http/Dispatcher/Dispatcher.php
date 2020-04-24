@@ -135,6 +135,10 @@ class Dispatcher implements DispatcherInterface
             $handler = $this->stringHandler($handler, $request);
         }
 
+        if ($handler instanceof ResponseInterface) {
+            return $handler;
+        }
+
         if ($handler instanceof RequestHandlerInterface) {
             return $handler->handle($request);
         }
