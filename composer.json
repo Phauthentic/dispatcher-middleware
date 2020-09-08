@@ -10,16 +10,17 @@
         }
     ],
     "require": {
-        "php": "^7.2",
+        "php": "^7.4",
         "psr/container": "^1.0",
         "psr/http-factory": "^1.0",
         "psr/http-server-handler": "^1.0",
         "psr/http-server-middleware": "^1.0"
     },
     "require-dev": {
-        "instituteweb/composer-scripts": "^1.1"
+        "instituteweb/composer-scripts": "^1.1",
+        "phauthentic/presentation": "^1.0@alpha"
     },
-    "minimum-stability": "stable",
+    "minimum-stability": "dev",
     "prefer-stable": true,
     "config": {
         "bin-dir": "bin",

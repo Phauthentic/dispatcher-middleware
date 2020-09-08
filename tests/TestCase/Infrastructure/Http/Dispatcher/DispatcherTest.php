@@ -17,6 +17,11 @@ declare(strict_types=1);
 namespace Phauthentic\Test\TestCase\Infrastructure\Http\Dispatcher;
 
 use Phauthentic\Infrastructure\Http\Dispatcher\Dispatcher;
+use Phauthentic\Infrastructure\Http\Dispatcher\Factory\ClosureFactory;
+use Phauthentic\Infrastructure\Http\Dispatcher\Factory\ContainerFactory;
+use Phauthentic\Infrastructure\Http\Dispatcher\Factory\PsrRequestFactory;
+use Phauthentic\Infrastructure\Http\Dispatcher\Factory\FactoryCollection;
+use Phauthentic\Infrastructure\Http\Dispatcher\Factory\StringToClassResolverFactory;
 use PHPUnit\Framework\TestCase;
 use Psr\Container\ContainerInterface;
 use Psr\Http\Message\ResponseInterface;
@@ -27,13 +32,27 @@ use Psr\Http\Message\ServerRequestInterface;
  */
 class DispatcherTest extends TestCase
 {
+    protected $handlers;
+
+    public function setUp(): void
+    {
+        parent::setup();
+
+        $container = $this->getMockBuilder(ContainerInterface::class)
+            ->getMock();
+
+        $this->handlers = new FactoryCollection([
+            new ContainerFactory($container),
+            new ClosureFactory(),
+            new PsrRequestFactory()
+        ]);
+    }
+
     /**
      * @return void
      */
     public function testDispatchingCallableHandler(): void
     {
-        $container = $this->getMockBuilder(ContainerInterface::class)
-            ->getMock();
         $request = $this->getMockBuilder(ServerRequestInterface::class)
             ->getMock();
         $response = $this->getMockBuilder(ResponseInterface::class)
@@ -43,7 +62,7 @@ class DispatcherTest extends TestCase
             return $response;
         };
 
-        $dispatcher = new Dispatcher($container);
+        $dispatcher = new Dispatcher($this->handlers);
         $result = $dispatcher->dispatch($request, $callable);
         $this->assertInstanceOf(ResponseInterface::class, $result);
 
@@ -80,17 +99,32 @@ class DispatcherTest extends TestCase
             }
         };
 
-        $container->expects($this->any())
+        // For the container handler
+        $container->expects($this->at(0))
+            ->method('has')
+            ->with('Users@login')
+            ->willReturn(false);
+
+        // For the StrinToClass Handler
+        $container->expects($this->at(1))
             ->method('has')
             ->with('Users')
             ->willReturn(true);
 
+        // Return the resolved object
         $container->expects($this->any())
             ->method('get')
             ->with('Users')
             ->willReturn($class);
 
-        $dispatcher = new Dispatcher($container);
+        $handlers = new FactoryCollection([
+            new ContainerFactory($container),
+            new StringToClassResolverFactory($container),
+            new ClosureFactory(),
+            new PsrRequestFactory()
+        ]);
+
+        $dispatcher = new Dispatcher($handlers);
         $result = $dispatcher->dispatch($request, 'Users@login');
         $this->assertInstanceOf(ResponseInterface::class, $result);
     }

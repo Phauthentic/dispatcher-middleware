@@ -5,9 +5,16 @@
 The middleware inspects the requests using the extractor and if the result of the extraction was something else than `null`, it will pass the result on to the dispatcher. The dispatcher will try to dispatch it and implements the actual dispatching logic.
 
 ```php
+$psrContainer = new SomePsrContainerImplementation();
+
 new DispatcherMiddleware(
     new RequestAttributeExtractor(),
-    new Dispatcher($psrContainer)
+    new Dispatcher(new FactoryCollection([
+       new ContainerFactory($psrContainer),
+       new StringToClassResolverFactory($psrContainer),
+       new ClosureFactory(),
+       new PsrRequestFactory()
+   ]))
 );
 ```
 
@@ -31,9 +38,9 @@ To implement your own extractor you'll have to implement the [HandlerExtractorIn
 
 This library comes with a simple [RequestAttributeExtractor](../src/Infrastructure/Http/Dispatcher/RequestAttributeExtractor.php) that will check the request for an attribute, if it is not present `null` will be returned.
 
-## Dispatchers
+## Dispatcher
 
-Dispatchers take the handler and try to execute it depending what it is. The library comes with a dispatcher that will resolve `callable` and `string` handlers. The string must be of the format `<prefix>.<controller-or-handler>@<action>`.
+The dispatcher takes the handler and tries to execute it depending on what it is. The library comes with a dispatcher that will resolve `callable` and `string` handlers. The string must be of the format `<prefix>.<controller-or-handler>@<action>`.
 
 * `<prefix>` is optional but useful for plugins or extensions that reside in another namespace.
  * `<controller-or-handler>` is the actual class.
@@ -43,7 +50,3 @@ You can change the separators via setter methods on the dispatcher object.
  If you want to implement your own dispatcher you'll have to implement the [DispatcherInterface](../src/Infrastructure/Http/Dispatcher/DispatcherInterface.php).
 
 The dispatcher that comes with the library uses a PSR container to resolve the actual controller or request handler class.
-
-```php
-new Dispatcher($psrContainer)
-```

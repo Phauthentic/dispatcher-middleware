@@ -26,7 +26,7 @@ class RequestAttributeExtractor implements HandlerExtractorInterface
     /**
      * @var string
      */
-    protected $attributeName;
+    protected string $attributeName = '';
 
     /**
      * @param string $attributeName Attribute name to check for the handler
