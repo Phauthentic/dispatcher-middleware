@@ -27,9 +27,9 @@ jobs:
     - name: Composer install
       run: |
         if [[ ${{ matrix.prefer-lowest == '7.4' }} ]]; then
-          composer update --prefer-lowest --prefer-stable
+          composer update --prefer-lowest --prefer-stable --ignore-platform-reqs
         else
-          composer install
+          composer install --ignore-platform-reqs
         fi
     - name: Run PHPUnit
       run: |
