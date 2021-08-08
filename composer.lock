@@ -4,31 +4,26 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "cad114962d05d3aabd07806313936bb7",
+    "content-hash": "105487650fc9cad500dadbe7acf7f424",
     "packages": [
         {
             "name": "psr/container",
-            "version": "1.0.0",
+            "version": "1.1.1",
             "source": {
                 "type": "git",
                 "url": "https://github.com/php-fig/container.git",
-                "reference": "b7ce3b176482dbbc1245ebf52b181af44c2cf55f"
+                "reference": "8622567409010282b7aeebe4bb841fe98b58dcaf"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/php-fig/container/zipball/b7ce3b176482dbbc1245ebf52b181af44c2cf55f",
-                "reference": "b7ce3b176482dbbc1245ebf52b181af44c2cf55f",
+                "url": "https://api.github.com/repos/php-fig/container/zipball/8622567409010282b7aeebe4bb841fe98b58dcaf",
+                "reference": "8622567409010282b7aeebe4bb841fe98b58dcaf",
                 "shasum": ""
             },
             "require": {
-                "php": ">=5.3.0"
+                "php": ">=7.2.0"
             },
             "type": "library",
-            "extra": {
-                "branch-alias": {
-                    "dev-master": "1.0.x-dev"
-                }
-            },
             "autoload": {
                 "psr-4": {
                     "Psr\\Container\\": "src/"
@@ -41,7 +36,7 @@
             "authors": [
                 {
                     "name": "PHP-FIG",
-                    "homepage": "http://www.php-fig.org/"
+                    "homepage": "https://www.php-fig.org/"
                 }
             ],
             "description": "Common Container Interface (PHP FIG PSR-11)",
@@ -55,9 +50,9 @@
             ],
             "support": {
                 "issues": "https://github.com/php-fig/container/issues",
-                "source": "https://github.com/php-fig/container/tree/master"
+                "source": "https://github.com/php-fig/container/tree/1.1.1"
             },
-            "time": "2017-02-14T16:28:37+00:00"
+            "time": "2021-03-05T17:36:06+00:00"
         },
         {
             "name": "psr/http-factory",
@@ -284,47 +279,6 @@
     ],
     "packages-dev": [
         {
-            "name": "instituteweb/composer-scripts",
-            "version": "1.1.0",
-            "source": {
-                "type": "git",
-                "url": "https://bitbucket.org/InstituteWeb/composer-scripts.git",
-                "reference": "5907516e0d6aba5f2b78cafd4af3cb352b44e9ab"
-            },
-            "dist": {
-                "type": "zip",
-                "url": "https://bitbucket.org/InstituteWeb/composer-scripts/get/5907516e0d6aba5f2b78cafd4af3cb352b44e9ab.zip",
-                "reference": "5907516e0d6aba5f2b78cafd4af3cb352b44e9ab",
-                "shasum": ""
-            },
-            "require-dev": {
-                "composer/composer": "^1.2"
-            },
-            "type": "library",
-            "autoload": {
-                "psr-4": {
-                    "InstituteWeb\\ComposerScripts\\": "src"
-                }
-            },
-            "notification-url": "https://packagist.org/downloads/",
-            "license": [
-                "GPL-2.0"
-            ],
-            "authors": [
-                {
-                    "name": "Armin Vieweg",
-                    "email": "armin@v.ieweg.de"
-                }
-            ],
-            "description": "Fixes slashe issues on Windows when executing composer scripts (like 'bin/example').",
-            "homepage": "https://bitbucket.org/InstituteWeb/composer-scripts",
-            "support": {
-                "issues": "https://bitbucket.org/InstituteWeb/composer-scripts/issues",
-                "source": "https://bitbucket.org/InstituteWeb/composer-scripts/src/5907516e0d6aba5f2b78cafd4af3cb352b44e9ab/?at=1.1.0"
-            },
-            "time": "2017-02-21T15:09:52+00:00"
-        },
-        {
             "name": "phauthentic/presentation",
             "version": "1.0.0-alpha",
             "source": {
@@ -388,7 +342,7 @@
     "prefer-stable": true,
     "prefer-lowest": false,
     "platform": {
-        "php": "^7.4"
+        "php": "^7.4 || ^8.0"
     },
     "platform-dev": [],
     "plugin-api-version": "2.0.0"
